@@ -6,7 +6,7 @@
 	<!-- Root Context: defines shared resources visible to all other web components -->
 	
 	<!-- 
-		JDBC 관련 빈(클래스 객체) 등록, 사용할 때 쓰이는 파일.
+		JDBC 관련 빈(클래스 객체) 등록, 설정 등을 관리하는 파일.
 		JDBC 뿐만 아니라 다양한 라이브러리를 사용할 때 필요한 빈 등록이나
 		설정 등을 담당하는 파일이다.
 		초반부이기 때문에 지금은 아무것도 작성되어 있지 않다.  
