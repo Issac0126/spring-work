@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 구현하고자 하는 인터페이스의 풀 경로를 작성. -->
+<mapper namespace="com.spring.db.repository.IScoreMapper">
+
+	<!-- DB 컬럼명과 VO의 필드명을 맞추는 ResultMap 선언 -->
+	<!-- type로 어떤 객체를 포장할 때 참고할지 알려줌. id는 이름(내부값 자유) -->
+	<resultMap type="com.spring.db.model.ScoreVO" id="scoreMap">
+		<!-- id 태그는 PRIMARY KEY, 나머지는 result로 맵핑 -->
+		<id property="stuId" column="stu_id" />
+		<result property="stuName" column="stu_name" />
+	</resultMap>
+
+
+	<!-- 점수 등록 기능 -->
+	<insert id="insertScore"> <!-- 여기서 insertScore는 추상메서드. -->
+		INSERT INTO scores
+		(stu_name, kor, eng, math, total, average)
+		VALUES(#{stuName},#{kor},#{eng},#{math},#{total},#{average})
+	</insert>
+	
+	<!-- 점수 전체 조회 기능 -->
+	<select id="selectAllScore" resultMap="scoreMap">
+		SELECT * FROM scores
+		ORDER BY stu_id ASC
+	</select>
+	
+	<delete id="deleteScore">
+		DELETE FROM scores
+		WHERE stu_id = #{num}
+	</delete>
+	
+	<!-- 점수 개별 조회 기능 -->
+	<select id="selectOne" resultMap="scoreMap">
+		SELECT * FROM scores
+		WHERE stu_id = #{num}
+	</select>
+	
+	
+	
+	
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+

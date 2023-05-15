@@ -15,6 +15,9 @@ public interface IBoardService {
 	//글 전체 조회 
 	List<BoardVO> seleteAllBoard();
 	
+	//글 상세 조회
+	BoardVO getArticle(int bNo);
+	
 	//글 삭제
 	void deleteBoard(int bNo);
 	

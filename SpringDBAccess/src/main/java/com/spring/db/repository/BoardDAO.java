@@ -45,7 +45,7 @@ public class BoardDAO implements IBoardDAO {
 	
 	@Override
 	public List<BoardVO> getArticles() {
-		String sql="SELECT * FROM jdbc_board ORDER BY board_no";
+		String sql="SELECT * FROM jdbc_board ORDER BY board_no DESC";
 		List<BoardVO> list = template.query(sql, new ArticleList());
 		System.out.println(list);
 		return list;
@@ -54,19 +54,24 @@ public class BoardDAO implements IBoardDAO {
 	
 	@Override
 	public BoardVO getArticle(int bno) {
-		return null;
+		String sql = "SELECT * FROM jdbc_board WHERE board_no =?";
+		return template.queryForObject(sql, new ArticleList(), bno);
 	}
 
 	
 	@Override
 	public void deleteArticle(int bno) {
-
+		String sql = "DELETE FROM jdbc_board WHERE board_no =?";
+		template.update(sql, bno);
 	}
 
 	
 	@Override
 	public void updateArticle(BoardVO vo) {
-
+		String sql = "UPDATE jdbc_board"
+				+ " SET writer=?, title=?, content=?"
+				+ " WHERE board_no=?";
+		template.update(sql, vo.getWriter(), vo.getTitle(), vo.getContent(), vo.getBoardNo());
 	}
 
 }
