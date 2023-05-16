@@ -6,10 +6,10 @@ import com.spring.db.model.BoardVO;
 
 public interface IBoardMapper {
 
-	//게시글 등록
+		//게시글 등록
 		void insertArticle(BoardVO vo);
 
-		//전체 게시글 조회
+		//글 목록(전체 게시글 조회)
 		List<BoardVO> getArticles();
 
 		//게시글 상세 보기
