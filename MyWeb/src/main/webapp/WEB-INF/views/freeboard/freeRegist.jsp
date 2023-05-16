@@ -32,7 +32,7 @@
 	                    </table>
 	                    <div class="titlefoot">
 	                        <button class="btn" type="submit">등록</button>
-	                        <button class="btn" type="button" onclick="location.href=${pageContext.request.contextPath}/freeboard/freeList">목록</button>
+	                        <button class="btn" type="button" onclick="location.href='${pageContext.request.contextPath}/freeboard/freeList'">목록</button>
 	                        <!-- 주의!!!!!!! button은 form 안에서 타입을 지정하지 않으면 submit로 동작함. -->
 	                    </div>
                     </form>
