@@ -17,7 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.spring.myweb.FreeBoardController;
+import com.spring.myweb.controller.FreeBoardController;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(locations = {

@@ -14,6 +14,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.spring.myweb.command.FreeBoardVO;
+import com.spring.myweb.util.PageVO;
 
 @ExtendWith(SpringExtension.class) //테스트 환경을 만들어 주는 junit5 객체 로딩
 @ContextConfiguration(locations = {
@@ -35,34 +36,38 @@ public class FreeBoardMapperTest {
 		//given - when - then 패턴을 따른다. (생략 가능)
 		
 		//given: 테스트를 위해 주어질 데이터 (ex/ parameter)
-		FreeBoardVO vo = new FreeBoardVO();
-		vo.setTitle("귄");
-		vo.setWriter("lun1234");
-		vo.setContent("만두좋아행복한펭귄");
+		for(int i = 1; i<=200; i++) {
+			FreeBoardVO vo = new FreeBoardVO();
+			vo.setTitle("테스트 타이틀 "+i);
+			vo.setWriter("ham1234");
+			vo.setContent("테스트"+i);			
+			//when: 테스트 실제 상황
+			mapper.regist(vo);
+		}
 		
-		//when: 테스트 실제 상황
-		mapper.regist(vo);
 		
 		//then: 테스트 결과를 확인.
 	}
 	
 	
 	@Test
-	@DisplayName("전체 글 목록을 조회하고,"
-			+ " 조회한 글 갯수를 파악했을 때 하나가 조회될 것이다.")
+	@DisplayName("사용자가 원하는 페이지 번호에 맞는 글 목록을 불러 올 것이고,"
+			+ " 게시물의 개수는 사용자가 원하는 만큼의 개수를 가진다.")
 	void getListTest() {
 		
 		//given (줄 게 없으므로 건너뜀)
+		PageVO vo = new PageVO();
+		vo.setPageNum(7);
 		
 		//when
-		List<FreeBoardVO> list = mapper.getList();
+		List<FreeBoardVO> list = mapper.getList(vo);
 		
 		//then 
-		list.forEach(vo -> System.out.println(vo));
+		list.forEach(article -> System.out.println(article));
 		/*	forEach 풀이: 
 		 * 	for(FreeBoardVO vo : list) {System.out.println(vo);} */
 		
-		assertEquals(1, list.size()); // -> 나는 list.size가 1이리라 단언한다.
+		assertEquals(vo.getCpp(), list.size()); // -> 나는 list.size가 1이리라 단언한다.
 		//위의 값이 true라면 정상작동, false라면 예외처리된다.
 		
 	}
@@ -117,11 +122,10 @@ public class FreeBoardMapperTest {
 		
 		//when
 			mapper.delete(bno);
-			List<FreeBoardVO> list = mapper.getList();
 			FreeBoardVO vo = mapper.getContent(bno);
 			
 		//then
-			assertEquals(1, list.size());
+//			assertEquals(1, mapper.getList().list.size());
 			assertNull(vo);
 		System.out.println("삭제 완료!");
 		
