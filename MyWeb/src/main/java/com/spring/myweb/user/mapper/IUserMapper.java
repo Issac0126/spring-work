@@ -15,7 +15,18 @@ public interface IUserMapper {
 	
 	
 	//로그인
-	UserVO login(@Param("id") String id,@Param("pw") String pw);
+	/*
+	 - MyBatis로 DB 연동을 진행할 때, 파라미터 값이 2개 이상을 그냥 보내면
+	  에러가 발생하기 때문에 조치가 필요하다.
+	  
+	  1. (MyBatis제공) @Param을 이용해서 이름을 붙여주는 방법. 
+	  	(xml 파일에서 해당 값을 지목할 수 있는 이름 붙이기)
+	  2. Map으로 포장해서 보내는 방법 (Map 생성 -> .put("키 선언", 값) )
+	  3. 클래스를 디자인해서 객체 하나만 매개값으로 보내는 방법 (VO)
+	  
+	  중 하나를 상황에 맞게 적절하게 선택하면 된다.
+	 */
+	UserVO login(@Param("id") String id, @Param("pw") String pw);
 	
 	
 	//회원 정보 얻어오기

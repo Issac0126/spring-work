@@ -1,6 +1,7 @@
 package com.spring.myweb.user.mapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.junit.jupiter.api.DisplayName;
@@ -63,6 +64,7 @@ public class UserMapperTest {
 		UserVO vo = mapper.login(id, pw);
 		
 		//then
+		assertNotNull(vo);
 	}
 	
 	// 회원 정보 얻어오기
@@ -88,8 +90,6 @@ public class UserMapperTest {
 		vo.setUserPhone2("12345678");
 		
 		mapper.updateUser(vo);
-		
-		
 		
 	}
 	
