@@ -18,6 +18,8 @@ local.properties
 .project
 .springBeans
 .properties
+classes/
+properties/
 
 # External tool builders
 .externalToolBuilders/
