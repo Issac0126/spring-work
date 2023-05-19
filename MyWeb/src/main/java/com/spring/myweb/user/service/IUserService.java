@@ -17,7 +17,7 @@ public interface IUserService {
 	
 	
 	//회원 정보 얻어오기
-	 UserVO getInfo(String id);
+	UserVO getInfo(String id);
 	
 	
 	//회원 정보 수정

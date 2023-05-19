@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 public class MailSenderService {
 
 	@Autowired
-	private JavaMailSender mailSender;
+	private JavaMailSender mailSender; //빈 등록
 	private int authNum;
 	
 	
@@ -37,7 +37,7 @@ public class MailSenderService {
 		
 		authNum = makeRandomNumber();
 		
-		String setFrom = "diano6@naver.com"; //email-config에 설정한 발신용 이메일 주소 입력
+		String setFrom = "diano679@gmail.com"; //email-config에 설정한 발신용 이메일 주소 입력
 		String toMail = email; //수신받을 이메일(가입하고자 하는 사람의 이메일)
 		String title = "회원 가입 인증 이메일 입니다."; //이메일 제목
 		String content = "<h2>홈페이지를 방문해 주셔서 감사합니다.</h2>" +
@@ -63,7 +63,7 @@ public class MailSenderService {
 			//생성자의 매개값으로는 (MimeMessage 객체, boolean, 문자 인코딩 설정)
 			//true 매개값을 전달하면 MultiPart 형식의 메세지 전달이 가능. (이미지 첨부 등 첨부 파일)
 			//값을 전달하지 않는다면 단순 텍스트만 사용.
-			MimeMessageHelper helper = new MimeMessageHelper(message, false, "utf-8");
+			MimeMessageHelper helper = new MimeMessageHelper(message, true, "utf-8");
 			
 			helper.setFrom(setFrom);
 			helper.setTo(toMail);
