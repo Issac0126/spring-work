@@ -15,7 +15,9 @@ public class PageVO {
 	private String keyword;
 	private String condition;
 	
-
+	//myPage에서 페이징을 구현하기 위한 필드를 추가
+	private String loginId; //현재 로그인중인 사용자의 ID
+	
 	public PageVO() {
 		this.pageNum = 1;
 		this.cpp = 10;

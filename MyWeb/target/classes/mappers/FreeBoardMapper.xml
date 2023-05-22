@@ -27,6 +27,12 @@
 	 	</if>
 	 </sql>
 	 
+	 <sql id="myPage"> <!-- UserControll에서 loginId가 전달되어야만 발동. -->
+	 	<if test="loginId != null"> <!-- 로그인한 사람을 전달 -->
+			WHERE writer = #{loginId}
+	 	</if>
+	 </sql>
+	 
 	 
 	 
 	<insert id="regist">
@@ -46,7 +52,8 @@
 	<select id="getTotal" resultType="int"> <!-- 리턴이 있으면 반드시 resultType를 기재해야 한다. -->
 		SELECT COUNT(*)
 		FROM freeboard
-		<include refid="search" />
+		<include refid="search" /> <!-- freeboard 쪽으로 들어가면 작동 -->
+		<include refid="myPage" /> <!-- myPage 쪽으로 들어가면 작동 -->
 	</select>
 	
 	<select id="getContent" resultType="board">

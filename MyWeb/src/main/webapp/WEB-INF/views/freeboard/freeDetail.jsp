@@ -55,6 +55,8 @@
         </div>
         </section>
         
+        
+        <!-- 댓글 영역 시작 부분 -->
         <section style="margin-top: 80px;">
             <div class="container">
                 <div class="row">
@@ -65,20 +67,20 @@
                             </div>
                             <!--form-control은 부트스트랩의 클래스입니다-->
 	                    <div class="reply-content">
-	                        <textarea class="form-control" rows="3"></textarea>
+	                        <textarea class="form-control" rows="3" id="reply"></textarea>
 	                        <div class="reply-group">
 	                              <div class="reply-input">
-	                              <input type="text" class="form-control" placeholder="이름">
-	                              <input type="password" class="form-control" placeholder="비밀번호">
+	                              <input type="text" class="form-control" id="replyId" placeholder="이름">
+	                              <input type="password" class="form-control" id="replyPw" placeholder="비밀번호">
 	                              </div>
 	                              
-	                              <button type="button" class="right btn btn-info">등록하기</button>
+	                              <button type="button" id="replyRegist" class="right btn btn-info">등록하기</button>
 	                        </div>
 	
 	                    </div>
                         </form>
 
-                        <!--여기에접근 반복-->
+                        <!--여기에 접근 반복-->
                         <div id="replyList">
                         <div class='reply-wrap'>
                             <div class='reply-image'>
@@ -128,3 +130,76 @@
 	</div>
 	
 	<%@ include file = "../include/footer.jsp" %>
+
+    <script>
+
+        window.onload() = Function{
+
+            document.getElementById("replyRegist").onclick = function() {
+
+                const bno = '${article.bno}'; //현재 게시글 번호
+                const reply = document.getElementById('reply').value;
+                const replyId = document.getElementById('replyId').value;
+                const replyPw = document.getElementById('replyPw').value;
+
+                if(reply === '' || replyId === '' || replyPw ===''){
+                    alert('이름, 비밀번호, 내용을 입력해주세요!')
+                    return;
+                }
+
+                
+                //요청에 관련된 정보 객체
+                const reqObj = {
+                    method: 'post',
+                    headers: { 'Content-type':'application/json' },
+
+                    body: JSON.stringify({
+                        'bno' : bno,
+                        'reply' : reply,
+                        'replyId' : replyId,
+                        'replyPw' : replyPw
+                    })
+                };
+
+                fetch('${pageContext.request.contextPath}/reply/regist', reqObj)
+                    .then(res => res.text())
+                    .then(data => {
+                        console.log('통신 성공!: '+data);
+                        document.getElementById('reply').value = ''; //텍스트 에어리어를 비워주기
+                        document.getElementById('replyId').value = '';
+                        document.getElementById('replyPw').value = '';
+                        //등록 완료 후 댓글 목록 함수를 호출해서 비동기식으로 목록 표현.
+                        getList();
+                    });
+                
+            }; //댓글 등록 이벤트 끝
+                
+
+            //댓글 목록 가져올 함수
+            //getList의 매개값으로 무엇을 줄 것인지?
+            //요청된 페이지 번호와, 화면을 리셋할 것인지의 여부를 boolean 타입의 reset으로 받는다.
+            //(페이지가 그대로 머물면서 댓글이 밑에 계속 쌓이기 때문에
+            //상황에 따라 페이지를 리셋할 것인지, 누적해서 쌓을 것인지의 여부를 판단한다.)
+            function getList(pageNum, reset){ 
+
+                const bno = '${article.bno}'; //게시글 번호
+
+                //get방식으로 댓글 목록을 요청(비동기)
+                fetch('${pageContext.request.contextPath}/reply/getList/'+bno+'/'+pageNum)
+
+
+            }
+
+
+
+
+
+
+        } //window.onload
+
+
+
+
+
+
+    </script>

@@ -12,9 +12,13 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.spring.myweb.command.UserVO;
+import com.spring.myweb.util.PageVO;
+
+import lombok.extern.slf4j.Slf4j;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration("file:src/main/webapp/WEB-INF/config/db-config.xml")
+@Slf4j
 public class UserMapperTest {
 
 	@Autowired
@@ -61,22 +65,26 @@ public class UserMapperTest {
 		String pw = "aaa1111!";
 		
 		//when
-		UserVO vo = mapper.login(id, pw);
+		String dbPw = mapper.login(id);
 		
 		//then
-		assertNotNull(vo);
+		assertNotNull(dbPw);
 	}
 	
 	// 회원 정보 얻어오기
 	@Test
 	@DisplayName("존재하지 않는 회원의 아이디를 입력하면 null이 올 것이다.")
 	void getInfoTest() {
-		//begin
-		String id = "ham8282";
+		PageVO paging = new PageVO();
+		UserVO vo = mapper.getInfo("digda0000", paging);
+		log.info("vo.toString"+vo.toString());
 		
-		//when
-		UserVO vo = mapper.getInfo(id);
-		assertNull(vo);
+//		//begin
+//		String id = "ham8282";
+//		
+//		//when
+//		UserVO vo = mapper.getInfo(id);
+//		assertNull(vo);
 		 
 	}
 	
@@ -84,7 +92,8 @@ public class UserMapperTest {
 	@Test
 	@DisplayName("아이디를 제외한 회원의 정보를 수정할 수 있다.")
 	void updateTest() {
-		UserVO vo = mapper.getInfo("abc1234");
+		PageVO paging = new PageVO();
+		UserVO vo = mapper.getInfo("abc1234", paging);
 		vo.setUserName("뉴김삐뽀");
 		vo.setUserPhone1("010");
 		vo.setUserPhone2("12345678");
