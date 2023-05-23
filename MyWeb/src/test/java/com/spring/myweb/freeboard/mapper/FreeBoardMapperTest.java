@@ -40,7 +40,8 @@ public class FreeBoardMapperTest {
 			FreeBoardVO vo = new FreeBoardVO();
 			vo.setTitle("테스트 타이틀 "+i);
 			vo.setWriter("ham1234");
-			vo.setContent("테스트"+i);			
+			vo.setContent("테스트"+i);	
+			
 			//when: 테스트 실제 상황
 			mapper.regist(vo);
 		}

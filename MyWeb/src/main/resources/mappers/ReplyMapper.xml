@@ -11,22 +11,35 @@
 		VALUES(#{bno}, #{reply}, #{replyId}, #{replyPw})
 	</insert>
 
-	<select id="getList" resultMap="reply">
+	<select id="getList" resultType="reply">
 		SELECT * FROM freereply
 		WHERE bno = #{bno} <!-- 맵의 키값 전달 -->
 		ORDER BY rno DESC
 		LIMIT #{paging.pageStart}, #{paging.cpp}
 	</select>
 	
-	<select id="getTotal" resultMap="int">
+	<select id="getTotal" resultType="int">
 		SELECT COUNT(*)
 		FROM freereply
 		WHERE bno = #{bno}
 	</select>
 
+	<select id="pwCheck" resultType="string">
+		SELECT reply_pw
+		FROM freereply
+		WHERE rno = #{rno}
+	</select>
 
-
-
+	<update id="update">
+		UPDATE freereply
+		SET	reply = #{reply}, update_date = current_timestamp
+		WHERE rno = #{rno}
+	</update>
+	
+	<delete id="delete">
+		DELETE FROM freereply
+		WHERE rno = #{rno}
+	</delete>
 
 
 

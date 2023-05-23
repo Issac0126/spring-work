@@ -19,7 +19,7 @@ public interface IReplyMapper {
 	
 	
 	//비밀번호 확인 (암호화 진행하면 결과가 true, false로 나오기 때문)
-	boolean pwCheck(ReplyVO vo); 
+	String pwCheck(int rno); 
 	
 	//댓글 수정
 	void update(ReplyVO vo);

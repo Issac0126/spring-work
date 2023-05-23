@@ -17,7 +17,7 @@ public class ReplyService implements IReplyService {
 	
 	@Autowired
 	private IReplyMapper mapper;
-	
+	@Autowired
 	private BCryptPasswordEncoder encoder;
 	
 	@Override
@@ -48,17 +48,21 @@ public class ReplyService implements IReplyService {
 
 	@Override
 	public boolean pwCheck(ReplyVO vo) {
-		return false;
+		
+		String dbPw = mapper.pwCheck(vo.getRno());
+		
+		return encoder.matches(vo.getReplyPw(), dbPw);
+		//입력한 암호와 데이터 베이스의 암호를 matches로 비교
 	}
 
 	@Override
 	public void update(ReplyVO vo) {
-
+		mapper.update(vo);
 	}
 
 	@Override
 	public void delete(int rno) {
-
+		mapper.delete(rno);
 	}
 
 }
