@@ -33,6 +33,7 @@
 		<resources mapping="/img/**" location="/resources/img/" />
 		<resources mapping="/fonts/**" location="/resources/fonts/" />
 
+
 	<!-- 컨트롤러가 리턴한 문자열 앞, 뒤에 적절한 경로를 붙여서
 		화면을 응답할 수 있도록 도와주는 뷰 리졸버 -->
 	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
@@ -40,9 +41,34 @@
 		<beans:property name="suffix" value=".jsp" />
 	</beans:bean>
 	
+	
 	<!-- 아노테이션으로 (ex/@Controller) 등록된 클래스 객체들을 탐색해서 빈으로 등록해주는 설정 태그 
 		base-package에 탐색할 패키지 경로를 쓰면 하위 패키지까지 모두 검색해준다. -->
 	<context:component-scan base-package="com.spring.myweb" />
+	
+	
+	<!-- 파일 업로드 -->
+	<!-- 
+		id를 multipartResolver로 선언.
+		Multipart 형식으로 전달되는 데이터를 스프링 mvc에서 사용할 수 있도록 변환해 주는 객체.
+	 -->
+	<beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		
+		<!-- 최대 업로드 가능한 바이트 크기(바이트 단위), -1은 제한이 없음을 의미 -->
+		<!-- 바이트 단위로 작성 (1MB = 1024 * 1024 = 1048576 byte)-->
+		<beans:property name="maxUploadSize" value="10485760"/>
+		
+		<!-- 업로드 요청을 변환할 때 사용할 문자 인코딩 방식 -->
+		<beans:property name="defaultEncoding" value="utf-8" />
+		
+	</beans:bean>
+	
+	
+	
+	
+	
+	
+	
 	
 	
 </beans:beans>

@@ -33,8 +33,7 @@ public class FreeBoardController {
 		PageCreator pc = new PageCreator(vo, service.getTotal(vo));
 		
 //		System.out.println("모델 추가중!"+pc.toString());
-		log.info("모델 추가중!"+pc.toString());
-		
+		log.info("모델 추가중!"+pc.toString()); 
 		
 		model.addAttribute("boardList", service.getList(vo));
 		model.addAttribute("pc", pc);

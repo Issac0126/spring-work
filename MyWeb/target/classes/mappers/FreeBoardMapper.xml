@@ -43,11 +43,19 @@
 	</insert>
 
 	<select id="getList" resultType="board">
-		SELECT * FROM freeboard
+		SELECT
+			bo.*,
+			(SELECT COUNT(*)
+		        FROM freereply re 
+		        WHERE re.bno = bo.bno
+		        ) AS reply_cnt
+		FROM freeboard bo
 		<include refid="search" />
-		ORDER BY bno DESC
+		ORDER BY bo.bno DESC
 		LIMIT #{pageStart}, #{cpp}
 	</select>
+		
+	
 
 	<select id="getTotal" resultType="int"> <!-- 리턴이 있으면 반드시 resultType를 기재해야 한다. -->
 		SELECT COUNT(*)

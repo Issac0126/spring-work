@@ -27,6 +27,9 @@ public class FreeBoardVO {
 	private LocalDateTime regDate;
 	private LocalDateTime updateDate;
 	
+	//하나의 게시물에 달린 댓글의 개수
+	private int replyCnt;
+	
 	
 	
 	

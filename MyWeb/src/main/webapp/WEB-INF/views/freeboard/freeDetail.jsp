@@ -101,7 +101,7 @@
                             </div> -->
 
                         </div>
-                        <button type="button" class="form-control" id="moreList">더보기(페이징)</button>
+                        <button type="button" class="form-control" id="moreList" style="display: none;" >더보기(페이징)</button>
                     </div>
                 </div>
             </div>
@@ -220,9 +220,6 @@
                         let total = data.total; //총 댓글 수
                         let replyList = data.list; //댓글 리스트
 
-                        //응답 데이터의 길이(댓글 수)가 0과 같거나 더 작으면 함수를 종료. 
-                        if(replyList.length <= 0 ) return;
-
                         //insert, update, delete 작업 후에는
                         //댓글 내용 태그를 누적하고 있는 strAdd 변수를 초기화해서
                         //마치 화면이 리셋된 것처럼 보여줘야 한다.
@@ -233,29 +230,36 @@
                             page = 1;
                         }
 
+                        console.log('getList 테스트');
+                        //응답 데이터의 길이(댓글 수)가 0과 같거나 더 작으면 함수를 종료. 
+                        if(replyList.length <= 0 ) return;
+                        
                         //더보기 버튼 삭제
                         //페이지번호x이번 요청으로 받은 댓글 수보다 전체 댓글 개수가 작다면 더보기 버튼을 없앤다.
                         console.log('현재 페이지: '+page);
                         if(total <= page*5){
                             document.getElementById('moreList').style.display = 'none';
-                        } else  document.getElementById('moreList').style.display = 'block';
+                        } else { document.getElementById('moreList').style.display = 'block'; }
+
 
                         //replyList의 개수만큼 태그를 문자열 형태로 직접 작성
                         //중간에 들어갈 글쓴이, 날짜, 댓글 내용은 목록에서 꺼내서 표현.
-                        for(let i = 0; i < replyList.length; i++){
-                            strAdd += 
+                        console.log(replyList[0].replyDate);
+                        // for(let i = 0; i < replyList.length; i++) {
+                        for (let i = 0; i < replyList.length; i++) {
+                            strAdd +=
                             `<div class='reply-wrap'>
                                 <div class='reply-image'>
                                     <img src='${pageContext.request.contextPath}/img/profile.png'>
                                 </div>
                                 <div class='reply-content'>
                                     <div class='reply-group'>
-                                        <strong class='left'>`+replyList[i].replyId+`</strong> 
-                                        <small class='left'>`+replyList[i].replyDate+`</small>
-                                        <a href='`+ replyList[i].rno +`' class='right replyDelete'><span class='glyphicon glyphicon-remove'></span>삭제 </a>  
-                                        <a href='`+ replyList[i].rno +`' class='right replyModify'><span class='glyphicon glyphicon-pencil'></span>수정&ensp;</a>  
+                                        <strong class='left'>` + replyList[i].replyId + `</strong>
+                                        <small class='left'>` + (replyList[i].updateDate !== null ? parseTime(replyList[i].updateDate) + ' (수정됨)' : parseTime(replyList[i].replyDate)) + `</small>
+                                        <a href='` + replyList[i].rno + `' class='right replyDelete'><span class='glyphicon glyphicon-remove'></span> 삭제</a>
+                                        <a href='` + replyList[i].rno + `' class='right replyModify'><span class='glyphicon glyphicon-pencil'></span> 수정&nbsp;&nbsp;</a>
                                     </div>
-                                    <p class='clearfix'>`+replyList[i].reply+`</p>
+                                    <p class='clearfix'>` + replyList[i].reply + `</p>
                                 </div>
                             </div>`;
                         }
@@ -421,23 +425,49 @@
                                     getList(1, true);
                                 }
 
+                            })// fetch, then 종료
 
+                    } //삭제 이벤트 종료 
 
-                            })
+                    
+                } //이벤트종료
+                
+                //댓글 날짜 변환 함수 
+                function parseTime(regDateTime) {
+                    console.log('parseTime 들어옴!!');
 
+                    let year, month, day, hour, minute, second;
 
-
+                    if(regDateTime.length === 5 ){
+                        [year, month, day, hour, minute] = regDateTime;
+                        second = 0;
+                    } else {
+                        [year, month, day, hour, minute, second] = regDateTime;
                     }
 
+                    //원하는 날짜로 객체를 생성
+                    const regTime = new Date(year, month-1, day, hour, minute, second);
+                                                    //자바스크립트는 월을 0부터 센다.
+                    console.log(regTime);
+                    const date = new Date; //지금 현재 시간
+                    console.log(date);
+                    const gap = date.getTime() - regTime.getTime(); //밀리초로 빼줌.
 
+                    let time;
+                        if (gap < 60 * 60 * 24 * 1000) { // 하루
+                            if (gap < 60 * 60 * 1000) { // 1시간
+                                time = '방금 전';
+                            } else {
+                                time = parseInt(gap / (1000 * 60 * 60)) + '시간 전';
+                            }
+                        } else if (gap < 60 * 60 * 24 * 30 * 1000) { // 한 달
+                            time = parseInt(gap / (1000 * 60 * 60 * 24)) + '일 전';
+                        } else {
+                            time = `${regTime.getFullYear()}년 ${regTime.getMonth()}월 ${regTime.getDate()}일`;
+                        }
 
-
-
-
-
-
-            } //이벤트종료
-
+                    return time;
+                }
 
 
 
