@@ -5,15 +5,19 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -33,7 +37,7 @@ public class SnsBoardController {
 	private ISnsBoardService service;
 	
 	
-	
+	//리스트 생성
 	@GetMapping("/snsList") 
 	public ModelAndView snsList() {  //@RestController에서 링크 이동시키는 방법
 		ModelAndView mv = new ModelAndView();
@@ -42,6 +46,7 @@ public class SnsBoardController {
 	};
 	
 	
+	//글 등록
 	@PostMapping("/upload")
 	public String upload(MultipartFile file, SnsBoardVO vo) {
 		service.insert(vo, file);
@@ -101,16 +106,79 @@ public class SnsBoardController {
 		}
 		
 		return result;
-		
-		
-		
+	}
+	
+	
+	//글 상세보기
+	@GetMapping("/content/{bno}")
+	public SnsBoardVO getDetail(@PathVariable int bno) {
+		return service.getDetail(bno);
 	}
 	
 	
 	
+	//삭제하기
+	@DeleteMapping("/{bno}")
+	public String delete(@PathVariable int bno, HttpSession session) {
+		
+		String loginId = (String) session.getAttribute("login");
+		SnsBoardVO vo = getDetail(bno);
+		log.info("로그인 중인 사용자: "+loginId);
+		if(loginId == null || 
+				!loginId.equals(vo.getWriter())) return "noAuth";
+
+		
+		log.info("글 삭제 if 통과!");
+		service.delete(bno);
+		
+		//글이 삭제되었다면 이미지도 존재할 필요가 없으므로
+		//이미지도 함께 지목해서 삭제.
+		String link = vo.getUploadPath() + vo.getFileLoca() + "/" + vo.getFileName();
+		File file = new File(link);
+		
+		// -> 삭제가 성공했다면 true, 실패하면 false
+		if(file.delete()) return "success"; 
+		 else return "deleteFail";
+	}
 	
 	
 	
+	@GetMapping("/download/{fileLoca}/{fileName}")
+	public ResponseEntity<byte[]> download(@PathVariable String fileLoca,
+											@PathVariable String fileName){
+		
+		File file = new File("C:/test/upload/"+fileLoca + "/"+ fileName);
+		
+		ResponseEntity<byte[]> result = null;
+		
+		HttpHeaders header = new HttpHeaders();
+		
+		//응답하는 본문을 브라우저가 어떻게 표시해야 할 지 알려주는 헤더 정보를 추가한다.
+		//inline인 경우 웹 페이지 화면에 표시되고, attachment인 경우 다운로드를 제공한다.
+		
+		//request객체의 getHeader("User-Agent") -> 단어를 뽑아서 확인
+        //ie: Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko  
+        //chrome: Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.101 Safari/537.36
+
+        //파일명한글처리(Chrome browser) 크롬
+        //header.add("Content-Disposition", "attachment; filename=" + new String(fileName.getBytes("UTF-8"), "ISO-8859-1") );
+        //파일명한글처리(Edge) 엣지 
+        //header.add("Content-Disposition", "attachment; filename=" + URLEncoder.encode(fileName, "UTF-8"));
+        //파일명한글처리(Trident) IE
+        //Header.add("Content-Disposition", "attachment; filename=" + URLEncoder.encode(fileName, "UTF-8").replaceAll("\\+", " "));
+		
+		header.add("Content-Disposition", "attachment; filename="+fileName);
+		
+		try {
+			result = new ResponseEntity<>(FileCopyUtils.copyToByteArray(file), header, HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			result = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		return result;
+		
+	}
 	
 	
 	

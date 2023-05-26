@@ -82,12 +82,12 @@ public class SnsBoardService implements ISnsBoardService {
 
 	@Override
 	public SnsBoardVO getDetail(int bno) {
-		return null;
+		return mapper.getDetail(bno);
 	}
 
 	@Override
 	public void delete(int bno) {
-
+		mapper.delete(bno);
 	}
 
 }
