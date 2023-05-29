@@ -19,6 +19,7 @@
 		<beans:property name="locations">
 			<beans:list>
 				<beans:value>classpath:/properties/email.properties</beans:value>			
+				<beans:value>classpath:/properties/kakaoAuth.properties</beans:value>			
 				<!-- <beans:value>classpath:/properties/Hikari.properties</beans:value> --> 
 				<!-- 이후에 .properties 파일이 더 생기면 여기서 추가해주면 된다. -->			
 			</beans:list>

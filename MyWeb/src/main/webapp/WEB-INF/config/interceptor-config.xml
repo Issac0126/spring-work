@@ -23,6 +23,7 @@
 			<ref bean="userLoginSuccessHandler" />		
 		</mvc:interceptor>
 		
+		
 		<!-- 로그인 권한 체크 인터셉터 url 매핑 -->
 		<mvc:interceptor>
 			<!-- 허용하지 않는만큼 추가하기 -->
