@@ -4,6 +4,8 @@
 <html>
 <head>
 
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
+
 	<style type="text/css">
 	section {
 		margin-top: 70px;
@@ -377,6 +379,17 @@
 		// }
 
 
+
+
+		/*
+		좋아요 기능 구현!
+		테이블 하나 만든다 (lno(PK), bno, user_id)
+		getList에서 목록을 불러오기 전에 좋아요 목록부터 불러오기
+		
+
+		*/
+
+
 		function getList(page, reset) {
 
 			console.log('page: '+ page +'reset: '+ reset);
@@ -489,38 +502,6 @@
 
 
 
-		/*
-		무한 스크롤 페이징
-		주의: 모든 게시판에 무한 스크롤 페이징 방식이 어울리는 것은 아님. 
-			단점> 사용자가 현재 위치를 알기 힘들다. 원하는 페이지에 도달하기 위해선
-			스크롤을 비효율적으로 많이 움직여야 한다. 
-		때문에 서비스 하는 형식에 맞는 페이징 방식을 적용하자.
-		*/
-
-		window.onscroll = function() {
-			/*
-			일종의 공식
-			윈도우(device)의 높이와 현재 스크롤의 위치 값을 더한 뒤,
-			문서(컨텐츠)의 높이와 비교해서 같아졌다면 로직을 수행한다.
-			문서높이 - 브라우저 창 높이 = 스크롤 창의 끝 높이와 같다면 -> 새로운 내용 불러오기!
-			*/
-			if(!isFinish){
-				if(window.innerHeight + window.scrollY >= document.body.scrollHeight){
-					//사용자의 스크롤이 바닥에 닿았을 때, 페이지의 변수 값을 하나 올리고
-					//reset여부는 false를 주어 누적해 계속 불러오면 된다.
-					//게시글을 한 번에 몇 개씩 불러 올지는 PageVO의 cpp를 조정하면 된다.
-					console.log('페이징 발동!');
-					getList(++page, true); //??? false로 주는걸로 기억하는뎅
-				}		
-			} else{
-				if(window.innerHeight + window.scrollY >= document.body.scrollHeight){
-					console.log('더 이상 불러올 목록이 없음!');
-				}
-			}	
-		} //onscroll 끝
-
-
-
 		//삭제 처리 
 		//삭제하기 링크를 클릭했을 때 이벤트를 발생 시켜서
 		//비동기 방식으로 삭제를 진행해 주세요. (삭제 버튼은 여러 개!)
@@ -557,9 +538,65 @@
 
 
 
+		/*
+		쓰로틀링 - 일정한 간격으로 함수를 실행.
+		쓰로틀링은 사용자가 이벤트를 몇 번이나 발생시키든, 일정한 간격으로
+		한 번만 실행하도록 하는 기법이다.
+		마우스 움직임, 스크롤 이벤트 같은 짧은 주기로 자주 발생하는 경우에 사용하는 기법이다.
+		(lodash 라이브러리를 이용하여 구현)
+		*/
+		const handleScroll = _.throttle(() => {
+			console.log('throttle 액션!');
+			const scrollPosition = window.pageYOffset;
+			const height = document.body.offsetHeight;
+			const windowHeight = window.innerHeight;
+
+			if(!isFinish){
+				if(scrollPosition + windowHeight >= height * 0.9){ //스크롤창이 90%에 도달하면 발동
+					console.log('scrollPosition: '+scrollPosition+'/ windowHeight: '+windowHeight
+					+'height * 0.9: '+height * 0.9);
+					console.log('next page call!');
+					getList(++page, true)
+				}
+			}
+		}, 700); //1000밀리초 = 1초
+
+		window.addEventListener('scroll', handleScroll)
 
 
 
+
+
+
+		/*
+		무한 스크롤 페이징
+		주의: 모든 게시판에 무한 스크롤 페이징 방식이 어울리는 것은 아님. 
+			단점> 사용자가 현재 위치를 알기 힘들다. 원하는 페이지에 도달하기 위해선
+			스크롤을 비효율적으로 많이 움직여야 한다. 
+		때문에 서비스 하는 형식에 맞는 페이징 방식을 적용하자.
+		*/
+
+		// window.onscroll = function() {
+		// 	/*
+		// 	일종의 공식
+		// 	윈도우(device)의 높이와 현재 스크롤의 위치 값을 더한 뒤,
+		// 	문서(컨텐츠)의 높이와 비교해서 같아졌다면 로직을 수행한다.
+		// 	문서높이 - 브라우저 창 높이 = 스크롤 창의 끝 높이와 같다면 -> 새로운 내용 불러오기!
+		// 	*/
+		// 	if(!isFinish){
+		// 		if(window.innerHeight + window.scrollY >= document.body.scrollHeight){
+		// 			//사용자의 스크롤이 바닥에 닿았을 때, 페이지의 변수 값을 하나 올리고
+		// 			//reset여부는 false를 주어 누적해 계속 불러오면 된다.
+		// 			//게시글을 한 번에 몇 개씩 불러 올지는 PageVO의 cpp를 조정하면 된다.
+		// 			console.log('페이징 발동!');
+		// 			getList(++page, true); //??? false로 주는걸로 기억하는뎅
+		// 		}		
+		// 	} else{
+		// 		if(window.innerHeight + window.scrollY >= document.body.scrollHeight){
+		// 			console.log('더 이상 불러올 목록이 없음!');
+		// 		}
+		// 	}	
+		// } //onscroll 끝
 
 
 
